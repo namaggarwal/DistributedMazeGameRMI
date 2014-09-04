@@ -3,6 +3,8 @@ package game;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import server.WaitConnect;
+
 public class GameImplementation extends UnicastRemoteObject implements GameMethod{
 
 	GameState gameState = GameState.NotStarted;
@@ -40,6 +42,11 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 	}
 	
+	public void startGame(){
+		
+		this.gameState = GameState.Started;
+		
+	}
 	
 	public int ConnectToGame(){
 		
@@ -48,9 +55,8 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 			case NotStarted:
 					gameState = GameState.Waiting;
-					break;
-			case Waiting:
-					gameState = GameState.Started;
+					WaitConnect wc = new WaitConnect(this);
+					wc.start();
 					break;
 			case Started:
 					return -1;													

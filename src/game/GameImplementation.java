@@ -21,38 +21,66 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	
 	String[] msg = new String[2];
 
-	//Randomly place treasures on the board.
-	private void placeTreasures(int numberOfTreasures){
-		int randomX = new Random().nextInt(numberOfTreasures);
-		int randomY = new Random().nextInt(numberOfTreasures);
-			
-		for(int i=0;i<numberOfTreasures;i++){
-			//Treasures have values as non-zero integers on the board.
-			gameBoard[randomX][randomY] = i;
-		}
+//	Randomly place treasures on the board.
+	private void setTreasures(int numberOfTreasures){
+		if(numberOfTreasures > 0){
+			for(int i=0;i<numberOfTreasures;i++){
+				int randomX = new Random().nextInt(boardSize);
+				System.out.println(randomX);
+				
+				int randomY = new Random().nextInt(boardSize);
+				System.out.println(randomY);
+				//Treasures have values as non-zero integers on the board.
+				gameBoard[randomX][randomY]=-1;
+			}
+		}	
 	}
 	
-	private void prepareGameBoard(){
+	private void printGameBoard(){
+		System.out.flush();
 		for (int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
-				if(gameBoard[i][j]==0)
-					System.out.println("_");
-				else
-					System.out.println("gameBoard[i][j]");
+				System.out.print(this.gameBoard[i][j]+"\t");
 			}
+			System.out.println();
 		}
+		//Print Players 
 	}
+	
+	private int score(Position playerPosition){
+//		When player hits a treasure, he gains a point.
+		
+		playerPosition.getxPos();
+		playerPosition.getyPos();
+		return 0;
+	}
+	
+	private void placePlayers(){
+		//Gets all clients connected and places them on the board. Need a for loop
+		Player player1 = new Player(1);
+		Player player2 = new Player(2);
 
+		Position position = new Position();
+		player1.setPosition(position);
+		player2.setPosition(position);
+	
+		this.gameBoard[position.getxPos()][position.getyPos()] = player1.getId();
+		this.gameBoard[position.getxPos()][position.getyPos()] = player2.getId();
+	}
+	
 	
 	public GameImplementation() throws RemoteException {
 		super();
-		//Set variables- 
-				this.boardSize = boardSize;
-				this.numberOfTreasures = numberOfTreasures;
-				gameBoard = new int[boardSize][boardSize];
-				playersLocation = new int[boardSize][boardSize];
-				//Place treasures on the board
-				//placeTreasures();
+//		Set variables- 
+		this.boardSize = 10;
+		this.numberOfTreasures = 3;
+		this.gameBoard = new int[boardSize][boardSize];
+		playersLocation = new int[boardSize][boardSize];
+//		Set Game Treasures
+		setTreasures(this.numberOfTreasures);
+//		Place treasures on the board
+		placePlayers();
+	
 	}
 	
 	
@@ -84,8 +112,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	}
 	
 	public int ConnectToGame(){
-		
-		
+			
 		switch(gameInfo){
 		
 			case NotStarted:
@@ -104,8 +131,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		return id++; 
 	}
 	
-	public HashMap createMessage(Integer msgType, Object msgObj){
-		
+	public HashMap createMessage(Integer msgType, Object msgObj){	
 		
 		HashMap <String,Object> hm = new HashMap<String,Object>();
 		hm.put(Constants.MessageType, msgType);
@@ -118,13 +144,17 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	
 //	This function will modify the current position of the user
 	public Position play(Player thisPlayer, char userInput){
-		//Get the current player's position
-		Position newPosition = thisPlayer.getPosition();
-		
-		//Get his X and Y cordinates
+/* 		TODO : Check whether a player hits a treasure, in which case he scores
+			   Check whether a player hits another player, in which case he cannot move.
+			   Check whether a player goes out of the board, in which case he cannot move.
+*/
+//		Get the current player's position
+		Position currentPosition = thisPlayer.getPosition();
+		Position newPosition = currentPosition;
+//		Get his X and Y cordinates
 		int xPos = newPosition.getxPos();
 		int yPos = newPosition.getyPos();
-		
+
 		//Move according to client input
 		switch (Character.toLowerCase(userInput)) {
 		
@@ -151,8 +181,14 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 			default:
 				System.out.println("Invalid Input!");
 			}
-		
-		return newPosition;
+		//Checking whether new position is out of the board -
+		if(newPosition.getxPos() < 0 || 
+				newPosition.getyPos()<0 || 
+				newPosition.getxPos() > boardSize || 
+				newPosition.getyPos() > boardSize)
+			return newPosition;
+		else 
+			return newPosition;
 		
 	}
 	

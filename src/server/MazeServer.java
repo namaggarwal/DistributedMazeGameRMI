@@ -13,13 +13,28 @@ public class MazeServer{
 
 
 	public static void main(String[] args) {
-										
-		Registry registry  = null;
+		
+		if(args.length != 2){
+			
+			System.out.println("Usage java MazeServer <Size of grid> <Number of treasures>");
+			System.exit(-1);
+		}
+		
+		int gridsize = Integer.parseInt(args[0]);
+		int nTreasures = Integer.parseInt(args[1]);
+		
+		if(nTreasures == 0){
+			
+			System.out.println("Number of tresures cannot be zero ");
+			System.exit(-1);
+		}
+		
+		Registry registry  = null;				
 		
 		MazeServer ms = new MazeServer();
 		
 		try {
-			GameImplementation gs = new GameImplementation();
+			GameImplementation gs = new GameImplementation(gridsize,nTreasures);
 			registry = LocateRegistry.getRegistry();
 			registry.bind("GameImplementation", gs);
 			System.out.println("Server Started");

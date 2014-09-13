@@ -5,7 +5,7 @@ public class Player {
 	private Position position;
 	private int id;
 	
-	//Initializing the player - 
+	 
 	public Player(int id){
 		this.id = id;		
 		this.playerScore = 0;

@@ -13,6 +13,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	private int numberOfTreasures;
 	private int[][] gameBoard;
 	private int[][] playersLocation;
+	private int remPlayers;
 	int id = 0;
 	
 	GameInfo gameInfo = GameInfo.NotStarted;
@@ -69,12 +70,13 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	}
 	
 	
-	public GameImplementation() throws RemoteException {
+	public GameImplementation(int bSize,int nTreasures) throws RemoteException {
 		super();
 //		Set variables- 
-		this.boardSize = 10;
-		this.numberOfTreasures = 3;
-		this.gameBoard = new int[boardSize][boardSize];
+		this.boardSize = bSize;
+		this.numberOfTreasures = nTreasures;
+		this.gameBoard = new int[boardSize][boardSize];		
+		remPlayers = bSize*bSize - 1;				
 		playersLocation = new int[boardSize][boardSize];
 //		Set Game Treasures
 		setTreasures(this.numberOfTreasures);

@@ -8,7 +8,7 @@ import server.WaitConnect;
 
 public class GameImplementation extends UnicastRemoteObject implements GameMethod{
 
-	GameState gameState = GameState.NotStarted;
+	GameInfo gameInfo = GameInfo.NotStarted;
 	
 	int id = 0;
 	
@@ -28,7 +28,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		int otherid;
 		
 		
-		if(gameState == GameState.Waiting){
+		if(gameInfo == GameInfo.Waiting){
 			
 			 String msg = "Game is in waiting state";
 			 return createMessage(OutputType.Error, msg); 
@@ -46,17 +46,17 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	
 	public void startGame(){
 		
-		this.gameState = GameState.Started;
+		this.gameInfo = GameInfo.Started;
 		
 	}
 	
 	public int ConnectToGame(){
 		
 		
-		switch(gameState){
+		switch(gameInfo){
 		
 			case NotStarted:
-					gameState = GameState.Waiting;
+					gameInfo = GameInfo.Waiting;
 					WaitConnect wc = new WaitConnect(this);
 					wc.start();
 					break;

@@ -1,6 +1,8 @@
 package client;
 
+import game.Constants;
 import game.GameMethod;
+import game.MessageType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,7 +10,7 @@ import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Scanner;
+import java.util.HashMap;
 
 public class MazeClient {
 
@@ -56,10 +58,27 @@ public class MazeClient {
 	    	String text;			
 	    	
 	    	try{
-	    		text = br.readLine();
-	    		System.out.println("Naman Aggarwal");
-	    		Object res = gs.saySomething(clientID, text);
-	    		System.out.println(res.toString());
+	    		text = br.readLine();	    		
+	    		HashMap res = gs.saySomething(clientID, text);
+	    		Integer msgType = Integer.parseInt(res.get(Constants.MessageType).toString());
+	    		String message = null;
+	    		switch(msgType){
+	    			
+	    			case MessageType.Error:
+	    							// Get the error message and print it
+	    							message = res.get(Constants.MessageObject).toString();
+	    							System.out.println(message);
+	    							break;
+	    			case MessageType.MazeObject:
+				    				message = res.get(Constants.MessageObject).toString();
+									System.out.println(message);									
+	    							break;
+	    			default :
+	    					System.out.println("Unknown response from the server");
+	    			
+	    		
+	    		}
+	    			    		
 	    	}catch(RemoteException re){
 				
 				

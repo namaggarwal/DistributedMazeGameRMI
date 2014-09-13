@@ -23,7 +23,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	}
 	
 	
-	public Object saySomething(int id,String s){
+	public HashMap saySomething(int id,String s){
 		
 		int otherid;
 		
@@ -31,7 +31,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		if(gameInfo == GameInfo.Waiting){
 			
 			 String msg = "Game is in waiting state";
-			 return createMessage(OutputType.Error, msg); 
+			 return createMessage(MessageType.Error, msg); 
 			
 		}
 		
@@ -39,7 +39,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 		otherid = id==1?0:1;
 		
-		return "You Said "+msg[id]+" other said "+msg[otherid];
+		return createMessage(MessageType.MazeObject,"You Said "+msg[id]+" other said "+msg[otherid]);
 		
 		
 	}
@@ -74,7 +74,9 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	public HashMap createMessage(Integer msgType, Object msgObj){
 		
 		
-		HashMap <Integer,Object> hm = new HashMap<Integer,Object>();
+		HashMap <String,Object> hm = new HashMap<String,Object>();
+		hm.put(Constants.MessageType, msgType);
+		hm.put(Constants.MessageObject, msgObj);
 				
 		return hm;
 		

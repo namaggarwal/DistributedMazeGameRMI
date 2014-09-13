@@ -6,7 +6,7 @@ public class Player {
 	private int id;
 	
 	//Initializing the player - 
-	public void Player(int id){
+	public Player(int id){
 		this.id = id;		
 		this.playerScore = 0;
 	}

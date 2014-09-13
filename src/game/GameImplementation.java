@@ -52,7 +52,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 				gameBoard = new int[boardSize][boardSize];
 				playersLocation = new int[boardSize][boardSize];
 				//Place treasures on the board
-				placeTreasures(numberOfTreasures);
+				//placeTreasures();
 	}
 	
 	

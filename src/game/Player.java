@@ -1,10 +1,11 @@
 package game;
 
 public class Player {
-	private int playerScore;
-	private Position position;
-	private int id;
 	
+	private int playerScore;
+	private int xPos;
+	private int yPos;
+	private int id;
 	 
 	public Player(int id){
 		this.id = id;		
@@ -19,21 +20,32 @@ public class Player {
 		this.playerScore = playerScore;
 	}
 
-	public Position getPosition() {
-		return position;
-	}
-
-	public void setPosition(Position position) {
-		this.position = position;
-	}
-
+	
 	public int getId() {
 		return id;
 	}
 
-	public int score(){
-		this.playerScore = this.playerScore++;
+	public int getScore(){
+		
 		return this.playerScore;
 	}
+	
+	public int getyPos() {
+		return yPos;
+	}
+
+	public void setyPos(int yPos) {
+		this.yPos = yPos;
+	}
+
+	
+	public int getxPos() {
+		return xPos;
+	}
+
+	public void setxPos(int xPos) {
+		this.xPos = xPos;
+	}
+
 
 }

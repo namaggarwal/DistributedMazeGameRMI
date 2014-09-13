@@ -11,8 +11,8 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 
 	private int boardSize;
 	private int numberOfTreasures;
-	private int[][] gameBoard;
-	private int[][] playersLocation;
+	private int[][] gameBoard;	
+	private HashMap <Integer,Player> pList;
 	private int maxPlayers;
 	int lastId = 0;
 	
@@ -29,19 +29,18 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		this.boardSize = bSize;
 		this.numberOfTreasures = nTreasures;
 		this.gameBoard = new int[boardSize][boardSize];	
-		
+		this.pList = new HashMap<Integer,Player>();
 		//Initialize GameBoard with all zeros
 		for(int i=0;i<boardSize;i++){
 			for(int j=0;j<boardSize;j++){
 				this.gameBoard[i][j] = 0;
 			}
 		}
+		
+		printGameBoard();
 				
-		this.maxPlayers = bSize*bSize - 1;				
-		playersLocation = new int[boardSize][boardSize];
-
-		setTreasures(this.numberOfTreasures);
-		placePlayers();
+		this.maxPlayers = bSize*bSize - 1;
+		//setTreasures(this.numberOfTreasures);	
 	
 	}
 	
@@ -62,37 +61,54 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	}
 	
 	private void printGameBoard(){
-		System.out.flush();
+		
 		for (int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
 				System.out.print(this.gameBoard[i][j]+"\t");
 			}
 			System.out.println();
 		}
-		//Print Players 
+	
 	}
 	
-	private int score(Position playerPosition){
-//		When player hits a treasure, he gains a point.
+	
+	private Boolean isOccupiedByPlayer(int x,int y){
 		
-		playerPosition.getxPos();
-		playerPosition.getyPos();
-		return 0;
+		if(this.gameBoard[x][y] > 0){
+			return true;
+		}else{
+			
+			return false;
+		}
+		
 	}
 	
-	private void placePlayers(){
-		//Gets all clients connected and places them on the board. Need a for loop
-		Player player1 = new Player(1);
-		Player player2 = new Player(2);
-
-		Position position = new Position();
-		player1.setPosition(position);
-		player2.setPosition(position);
-	
-		this.gameBoard[position.getxPos()][position.getyPos()] = player1.getId();
-		this.gameBoard[position.getxPos()][position.getyPos()] = player2.getId();
+	private void setRandomPlayerPosition(Player p){
+		
+		int x = 0;
+		int y = 0;
+		
+		Random rm;
+				
+		while(true){
+			
+			rm = new Random();
+			x = rm.nextInt(this.boardSize);
+			y = rm.nextInt(this.boardSize);
+			
+			if(!this.isOccupiedByPlayer(x, y)){
+				
+				p.setxPos(x);
+				p.setyPos(y);				
+				this.gameBoard[x][y] = p.getId();				
+				break;
+				
+			}
+			
+		}
+		
+		
 	}
-	
 
 	
 	public HashMap<String,Object> saySomething(int id,String s){
@@ -144,6 +160,10 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 		if(this.lastId<=this.maxPlayers){
 			
+			Player p = new Player(this.lastId);
+			this.pList.put(this.lastId, p);
+			setRandomPlayerPosition(p);
+			this.printGameBoard();
 			return createMessage(MessageType.ConnectSuccess,this.lastId);
 			
 		}else{
@@ -165,12 +185,12 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 	}
 	
+	/*
 //	This function will modify the current position of the user
 	public Position play(Player thisPlayer, char userInput){
-/* 		TODO : Check whether a player hits a treasure, in which case he scores
+ 		TODO : Check whether a player hits a treasure, in which case he scores
 			   Check whether a player hits another player, in which case he cannot move.
 			   Check whether a player goes out of the board, in which case he cannot move.
-*/
 //		Get the current player's position
 		Position currentPosition = thisPlayer.getPosition();
 		Position newPosition = currentPosition;
@@ -215,6 +235,6 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 	}
 	
-	
+	*/
 			
 }

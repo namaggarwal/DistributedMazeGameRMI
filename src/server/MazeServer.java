@@ -13,16 +13,7 @@ public class MazeServer{
 
 
 	public static void main(String[] args) {
-		
-		if(args.length != 1){
-			System.err.println("Usage: java MazeServer <port number>");
-			System.exit(1);
-		}
-		
-						
-		int port = Integer.parseInt(args[0]);
-		
-		
+										
 		Registry registry  = null;
 		
 		MazeServer ms = new MazeServer();

@@ -4,7 +4,7 @@ public class Position {
 	private int xPos;
 	private int yPos;
 	
-	public void Position(){
+	public Position(){
 		this.xPos = 0;
 		this.yPos = 0;
 	}

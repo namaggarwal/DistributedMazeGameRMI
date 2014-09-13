@@ -27,10 +27,9 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		if(numberOfTreasures > 0){
 			for(int i=0;i<numberOfTreasures;i++){
 				int randomX = new Random().nextInt(boardSize);
-				System.out.println(randomX);
-				
+
 				int randomY = new Random().nextInt(boardSize);
-				System.out.println(randomY);
+
 				//Treasures have values as non-zero integers on the board.
 				gameBoard[randomX][randomY]=-1;
 			}

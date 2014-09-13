@@ -6,9 +6,8 @@ public class Player {
 	private int id;
 	
 	//Initializing the player - 
-	public void Player(int id, Position initialPosition){
-		this.id = id;
-		this.position = initialPosition;
+	public void Player(int id){
+		this.id = id;		
 		this.playerScore = 0;
 	}
 	

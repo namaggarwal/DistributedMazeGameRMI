@@ -19,6 +19,10 @@ public class Player {
 	public void setPlayerScore(int playerScore) {
 		this.playerScore = playerScore;
 	}
+	
+	public void addPlayerScore(int addScore) {
+		this.playerScore += addScore;
+	}
 
 	
 	public int getId() {

@@ -1,6 +1,7 @@
 package client;
 
 import game.Constants;
+import game.Direction;
 import game.GameMethod;
 import game.MessageType;
 
@@ -66,42 +67,68 @@ public class MazeClient {
 		}
 				 	 	    
 	    
-	    while(true){
+	    
 	    	
-	    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	    	String text;			
-	    	
-	    	try{
-	    		text = br.readLine();	    		
-	    		res = gs.saySomething(clientID, text);
-	    		msgType = Integer.parseInt(res.get(Constants.MessageType).toString());
-	    		String message = null;
-	    		switch(msgType){
-	    			
-	    			case MessageType.Error:
-	    							// Get the error message and print it
-	    							message = res.get(Constants.MessageObject).toString();
-	    							System.out.println(message);
-	    							break;
-	    			case MessageType.MazeObject:
-				    				message = res.get(Constants.MessageObject).toString();
-									System.out.println(message);									
-	    							break;
-	    			default :
-	    					System.out.println("Unknown response from the server");
-	    			
-	    		
-	    		}
-	    			    		
-	    	}catch(RemoteException re){
-				
-				
-			} catch (IOException e) {
-				System.out.println("Cannot read from standard input");
-				e.printStackTrace();
-			}
-	    	
-	    }
+    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    	String text;			
+    	
+    	try{
+    		
+    		while(true){
+    			
+    			text = br.readLine();        	
+    			switch(text.toUpperCase().charAt(0)){
+    				
+    			case 'W': res = gs.move(clientID,Direction.UP);
+    				break;
+    			case 'A': res = gs.move(clientID,Direction.LEFT);
+					break;
+    			case 'S': res = gs.move(clientID,Direction.DOWN);
+					break;
+    			case 'D': res = gs.move(clientID,Direction.RIGHT);
+    				break;
+    			case 'E': res = gs.move(clientID,Direction.STAY);
+					break;
+				default:
+					System.out.println("Invalid Move!!!");
+    			
+    			}
+    			
+    			
+    			msgType = Integer.parseInt(res.get(Constants.MessageType).toString());
+        		String message = null;
+        		
+        		switch(msgType){
+        			
+        			case MessageType.Error:
+        							// Get the error message and print it
+        							message = res.get(Constants.MessageObject).toString();
+        							System.out.println(message);
+        							break;
+        			case MessageType.MazeObject:
+    			    				message = res.get(Constants.MessageObject).toString();
+    								System.out.println(message);									
+        							break;
+        			default :
+        					System.out.println("Unknown response from the server");
+        			
+        		
+        		}
+        		
+    			
+    			
+    		}
+    			
+    				    		
+    	}catch(RemoteException re){
+			
+			
+		} catch (IOException e) {
+			System.out.println("Cannot read from standard input");
+			e.printStackTrace();
+		}
+    	
+	    
     
     	
 	

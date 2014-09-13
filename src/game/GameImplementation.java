@@ -117,6 +117,10 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	}
 	
 	//Sets the player position to random, unoccupied position
+	//I feel this can be done using some other algo
+	//It will go on looping until it finds an empty position
+	//Since the Position is random, theoretically it might loop forever
+	//-Naman
 	private void setRandomPlayerPosition(Player p){
 		
 		int x = 0;
@@ -140,27 +144,6 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 			}
 			
 		}
-		
-		
-	}
-
-	
-	public HashMap<String,Object> saySomething(int id,String s){
-		
-		int otherid;
-				
-		if(gameInfo == GameInfo.Waiting){
-			
-			 String msg = "Game is in waiting state";
-			 return createMessage(MessageType.Error, msg); 
-			
-		}
-		
-		msg[id] = s; 
-		
-		otherid = id==1?0:1;
-		
-		return createMessage(MessageType.MazeObject,"You Said "+msg[id]+" other said "+msg[otherid]);
 		
 		
 	}
@@ -220,6 +203,61 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		return hm;
 		
 		
+	}
+	
+	private void makeMove(Player p,int newX, int newY){
+		
+		int curX = p.getxPos();
+		int curY = p.getyPos();
+		
+		int treasure = Math.abs(this.gameBoard[newX][newY]);
+		numberOfTreasures -= treasure;		
+		p.addPlayerScore(treasure);
+		this.gameBoard[newX][newY] = p.getId();
+		p.setxPos(newX);
+		p.setyPos(newY);
+		this.gameBoard[curX][curY] = 0;
+		
+		this.printGameBoard();
+		
+		
+	}
+	
+	public HashMap<String,Object> move(int id,int dir){
+		
+		Player p = this.pList.get(id);
+		int curX = p.getxPos();
+		int curY = p.getyPos();
+		int newX = curX;
+		int newY = curY;
+		
+		switch(dir){
+		
+			case Direction.UP: newX -= 1;
+				break;
+			case Direction.DOWN: newX += 1;
+				break;
+			case Direction.LEFT: newY -= 1;
+				break;
+			case Direction.RIGHT: newY += 1;
+				break;
+			case Direction.STAY:
+				return createMessage(MessageType.MazeObject,this.gameBoard);				
+		
+		}
+		
+		//Do the bounds checking		
+		if(newX>=0 && newX < this.boardSize && newY>=0 && newY <this.boardSize){
+			
+			//Check if its not occupied
+			if(!isOccupiedByPlayer(newX,newY)){
+				
+				makeMove(p,newX,newY);
+				// [TODO] Check game over condition here 
+			}
+		}
+		
+		return createMessage(MessageType.MazeObject,this.gameBoard);
 	}
 	
 	/*

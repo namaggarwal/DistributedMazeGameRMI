@@ -30,6 +30,8 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		this.numberOfTreasures = nTreasures;
 		this.gameBoard = new int[boardSize][boardSize];	
 		this.pList = new HashMap<Integer,Player>();
+		this.maxPlayers = bSize*bSize - 1;
+		
 		
 		//Initialize GameBoard with all zeros
 		for(int i=0;i<boardSize;i++){
@@ -37,10 +39,9 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 				this.gameBoard[i][j] = 0;
 			}
 		}
-		
-		printGameBoard();
 				
-		this.maxPlayers = bSize*bSize - 1;
+				
+		
 		
 	
 	}
@@ -90,6 +91,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 	}
 	
+	//Prints the gameBoard on server
 	private void printGameBoard(){
 		
 		for (int i = 0; i < boardSize; i++) {
@@ -102,7 +104,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		System.out.println();
 	}
 	
-	
+	//Checks if position x,y is occupied by the player or not
 	private Boolean isOccupiedByPlayer(int x,int y){
 		
 		if(this.gameBoard[x][y] > 0){
@@ -114,6 +116,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 	}
 	
+	//Sets the player position to random, unoccupied position
 	private void setRandomPlayerPosition(Player p){
 		
 		int x = 0;
@@ -145,8 +148,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	public HashMap<String,Object> saySomething(int id,String s){
 		
 		int otherid;
-		
-		
+				
 		if(gameInfo == GameInfo.Waiting){
 			
 			 String msg = "Game is in waiting state";
@@ -163,12 +165,15 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 	}
 	
+	
+	//Starts the game by setting the gameinfo variable to started
 	public void startGame(){
 		
 		this.gameInfo = GameInfo.Started;
 		
 	}
 	
+	//Connects a client to the game
 	public HashMap<String,Object> ConnectToGame(){
 		
 		 
@@ -205,6 +210,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 	}
 	
+	//Creates a new message to be send over to the client
 	public HashMap<String,Object> createMessage(Integer msgType, Object msgObj){	
 		
 		HashMap <String,Object> hm = new HashMap<String,Object>();

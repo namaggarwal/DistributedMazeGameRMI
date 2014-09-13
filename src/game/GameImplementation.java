@@ -30,6 +30,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		this.numberOfTreasures = nTreasures;
 		this.gameBoard = new int[boardSize][boardSize];	
 		this.pList = new HashMap<Integer,Player>();
+		
 		//Initialize GameBoard with all zeros
 		for(int i=0;i<boardSize;i++){
 			for(int j=0;j<boardSize;j++){
@@ -40,24 +41,53 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		printGameBoard();
 				
 		this.maxPlayers = bSize*bSize - 1;
-		//setTreasures(this.numberOfTreasures);	
+		
 	
 	}
 	
 	
 
-//	Randomly place treasures on the board.
-	private void setTreasures(int numberOfTreasures){
-		if(numberOfTreasures > 0){
-			for(int i=0;i<numberOfTreasures;i++){
-				int randomX = new Random().nextInt(boardSize);
-
-				int randomY = new Random().nextInt(boardSize);
-
-				//Treasures have values as non-zero integers on the board.
-				gameBoard[randomX][randomY]=-1;
+	//Place treasures on the board while checking it should not
+	//coincide with the player position
+	public void setRandomTreasures(){
+		
+		HashMap<Integer,HashMap<String,Integer>> hm = new HashMap<Integer,HashMap<String,Integer>>();
+		HashMap<String,Integer> pos;
+		int count = 0;
+		
+		//Put all the empty places inside the hashmap
+		for(int i=0;i<this.boardSize;i++){
+			
+			for(int j=0;j<this.boardSize;j++){
+				
+				if(!this.isOccupiedByPlayer(i,j)){
+					
+					pos = new HashMap<String,Integer>();
+					pos.put("X",i);
+					pos.put("Y",j);
+					hm.put(count, pos);
+					count++;
+				}
+				
 			}
-		}	
+			
+		}
+		
+		Random rm = new Random();
+		int hmpos,tresx,tresy;
+		
+		for(int i=0;i<this.numberOfTreasures;i++){
+						
+			hmpos = rm.nextInt(count);
+			tresx = hm.get(hmpos).get("X");
+			tresy = hm.get(hmpos).get("Y");
+			this.gameBoard[tresx][tresy] -= 1;
+			
+			
+		}
+		
+		this.printGameBoard();
+		
 	}
 	
 	private void printGameBoard(){
@@ -68,7 +98,8 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 			}
 			System.out.println();
 		}
-	
+		
+		System.out.println();
 	}
 	
 	
@@ -163,7 +194,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 			Player p = new Player(this.lastId);
 			this.pList.put(this.lastId, p);
 			setRandomPlayerPosition(p);
-			this.printGameBoard();
+			
 			return createMessage(MessageType.ConnectSuccess,this.lastId);
 			
 		}else{

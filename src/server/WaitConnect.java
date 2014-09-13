@@ -22,8 +22,9 @@ public class WaitConnect extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Game Started");
+		this.gi.setRandomTreasures();		
 		this.gi.startGame();
+		System.out.println("Game Started");
 		
 	}
 	

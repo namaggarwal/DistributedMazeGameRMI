@@ -7,6 +7,6 @@ import java.util.HashMap;
 public interface GameMethod extends Remote{
 
 	
-	public HashMap saySomething(int id,String s) throws RemoteException;
-	public int ConnectToGame() throws RemoteException;
+	public HashMap<String,Object> saySomething(int id,String s) throws RemoteException;
+	public HashMap<String,Object> ConnectToGame() throws RemoteException;
 }

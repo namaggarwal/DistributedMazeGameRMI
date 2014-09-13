@@ -13,14 +13,39 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	private int numberOfTreasures;
 	private int[][] gameBoard;
 	private int[][] playersLocation;
-	private int remPlayers;
-	int id = 0;
+	private int maxPlayers;
+	int lastId = 0;
 	
 	GameInfo gameInfo = GameInfo.NotStarted;
 	
 	private static final long serialVersionUID = -4933868291603601249L;
 	
 	String[] msg = new String[2];
+	
+	
+	public GameImplementation(int bSize,int nTreasures) throws RemoteException {
+		super();
+ 
+		this.boardSize = bSize;
+		this.numberOfTreasures = nTreasures;
+		this.gameBoard = new int[boardSize][boardSize];	
+		
+		//Initialize GameBoard with all zeros
+		for(int i=0;i<boardSize;i++){
+			for(int j=0;j<boardSize;j++){
+				this.gameBoard[i][j] = 0;
+			}
+		}
+				
+		this.maxPlayers = bSize*bSize - 1;				
+		playersLocation = new int[boardSize][boardSize];
+
+		setTreasures(this.numberOfTreasures);
+		placePlayers();
+	
+	}
+	
+	
 
 //	Randomly place treasures on the board.
 	private void setTreasures(int numberOfTreasures){
@@ -68,24 +93,9 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		this.gameBoard[position.getxPos()][position.getyPos()] = player2.getId();
 	}
 	
+
 	
-	public GameImplementation(int bSize,int nTreasures) throws RemoteException {
-		super();
-//		Set variables- 
-		this.boardSize = bSize;
-		this.numberOfTreasures = nTreasures;
-		this.gameBoard = new int[boardSize][boardSize];		
-		remPlayers = bSize*bSize - 1;				
-		playersLocation = new int[boardSize][boardSize];
-//		Set Game Treasures
-		setTreasures(this.numberOfTreasures);
-//		Place treasures on the board
-		placePlayers();
-	
-	}
-	
-	
-	public HashMap saySomething(int id,String s){
+	public HashMap<String,Object> saySomething(int id,String s){
 		
 		int otherid;
 		
@@ -112,8 +122,9 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 	}
 	
-	public int ConnectToGame(){
-			
+	public HashMap<String,Object> ConnectToGame(){
+		
+		 
 		switch(gameInfo){
 		
 			case NotStarted:
@@ -122,17 +133,28 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 					wc.start();
 					break;
 			case Started:
-					return -1;
+					String msg = "Game has already started !!! Cannot join now.";
+					return createMessage(MessageType.ConnectError,msg);
 			default:
 				break;													
 			
 		}
-								
+		
+		this.lastId++;
+		
+		if(this.lastId<=this.maxPlayers){
 			
-		return id++; 
+			return createMessage(MessageType.ConnectSuccess,this.lastId);
+			
+		}else{
+			
+			return createMessage(MessageType.ConnectError,"Maximum players limit reached. Cannot connect now");
+		}
+					
+		
 	}
 	
-	public HashMap createMessage(Integer msgType, Object msgObj){	
+	public HashMap<String,Object> createMessage(Integer msgType, Object msgObj){	
 		
 		HashMap <String,Object> hm = new HashMap<String,Object>();
 		hm.put(Constants.MessageType, msgType);

@@ -25,22 +25,28 @@ public class MazeServer{
 		
 		if(nTreasures == 0){
 			
-			System.out.println("Number of tresures cannot be zero ");
+			System.out.println("Number of treasures cannot be zero");
 			System.exit(-1);
 		}
 		
-		Registry registry  = null;				
+		if(gridsize < 2){
+			
+			System.out.println("GridSize should be atleast 2");
+			System.exit(-1);
+			
+		}
 		
-		MazeServer ms = new MazeServer();
+		Registry registry  = null;								
 		
 		try {
+			
 			GameImplementation gs = new GameImplementation(gridsize,nTreasures);
 			registry = LocateRegistry.getRegistry();
 			registry.bind("GameImplementation", gs);
 			System.out.println("Server Started");
 			
 		} catch (RemoteException re) {
-			// TODO Auto-generated catch block
+			
 			System.err.println("Server Cannot be Started");
 			re.printStackTrace();
 		} catch(AlreadyBoundException abe){

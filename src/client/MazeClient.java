@@ -22,6 +22,8 @@ public class MazeClient {
 
 		String host = (args.length < 1) ? null : args[0];
 		GameMethod gs = null;
+		int msgType;
+		HashMap<String,Object> res = null;
 		
 		try {
 		    Registry registry = LocateRegistry.getRegistry(host);
@@ -34,23 +36,35 @@ public class MazeClient {
 		}
 		
 		
-		try{
+		try{			
 			
-			clientID = gs.ConnectToGame();
+			res = gs.ConnectToGame();			
 			
 		}catch(RemoteException re){
 			
-			
+			System.out.println("Seems like server is not running or is throwing some exception.");
+			re.printStackTrace();
 		}
-	    
-	    if(clientID == -1){
-	    	
-	    	System.out.println("Cannot connect to game!!! It started already.");
-	    	System.exit(-1);
-	    	
-	    }
-	    
-	    System.out.println("Connected with id "+clientID);
+		
+		msgType = Integer.parseInt(res.get(Constants.MessageType).toString());
+		
+		switch(msgType){
+		
+			case MessageType.ConnectSuccess:
+				clientID = Integer.parseInt(res.get(Constants.MessageObject).toString());
+				System.out.println("Connected with id "+ clientID);
+				break;
+			case MessageType.ConnectError:
+				String msg =res.get(Constants.MessageObject).toString(); 
+				System.out.println(msg);
+				System.exit(-1);
+				break;
+			default:
+				System.out.println("Unknown message type!!!!");
+				System.exit(-1);										
+		
+		}
+				 	 	    
 	    
 	    while(true){
 	    	
@@ -59,8 +73,8 @@ public class MazeClient {
 	    	
 	    	try{
 	    		text = br.readLine();	    		
-	    		HashMap res = gs.saySomething(clientID, text);
-	    		Integer msgType = Integer.parseInt(res.get(Constants.MessageType).toString());
+	    		res = gs.saySomething(clientID, text);
+	    		msgType = Integer.parseInt(res.get(Constants.MessageType).toString());
 	    		String message = null;
 	    		switch(msgType){
 	    			

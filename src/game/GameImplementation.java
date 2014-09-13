@@ -2,6 +2,7 @@ package game;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
 
 import server.WaitConnect;
 
@@ -22,21 +23,22 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	}
 	
 	
-	public String saySomething(int id,String s){
+	public Object saySomething(int id,String s){
 		
 		int otherid;
 		
 		
 		if(gameState == GameState.Waiting){
 			
-			return "Game is in waiting state";
+			 String msg = "Game is in waiting state";
+			 return createMessage(OutputType.Error, msg); 
 			
 		}
 		
 		msg[id] = s; 
 		
 		otherid = id==1?0:1;
-	
+		
 		return "You Said "+msg[id]+" other said "+msg[otherid];
 		
 		
@@ -59,12 +61,24 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 					wc.start();
 					break;
 			case Started:
-					return -1;													
-		
+					return -1;
+			default:
+				break;													
+			
 		}
 								
 			
 		return id++; 
+	}
+	
+	public HashMap createMessage(Integer msgType, Object msgObj){
+		
+		
+		HashMap <Integer,Object> hm = new HashMap<Integer,Object>();
+				
+		return hm;
+		
+		
 	}
 		
 			

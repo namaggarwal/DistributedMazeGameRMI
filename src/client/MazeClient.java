@@ -2,6 +2,9 @@ package client;
 
 import game.GameMethod;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -30,8 +33,9 @@ public class MazeClient {
 		
 		
 		try{
+			
 			clientID = gs.ConnectToGame();
-			System.out.println("Connected with id "+clientID);
+			
 		}catch(RemoteException re){
 			
 			
@@ -44,16 +48,24 @@ public class MazeClient {
 	    	
 	    }
 	    
+	    System.out.println("Connected with id "+clientID);
+	    
 	    while(true){
 	    	
-	    	Scanner s=new Scanner(System.in);
-	    	String text = s.nextLine().trim();
-	    	try{ 	
-	    		String res = gs.saySomething(clientID, text);
-	    		System.out.println(res);
+	    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	    	String text;			
+	    	
+	    	try{
+	    		text = br.readLine();
+	    		System.out.println("Naman Aggarwal");
+	    		Object res = gs.saySomething(clientID, text);
+	    		System.out.println(res.toString());
 	    	}catch(RemoteException re){
 				
 				
+			} catch (IOException e) {
+				System.out.println("Cannot read from standard input");
+				e.printStackTrace();
 			}
 	    	
 	    }

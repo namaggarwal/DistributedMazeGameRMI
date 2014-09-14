@@ -224,6 +224,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 	}
 	
+	//Makes the move given the is of player and direction
 	public HashMap<String,Object> move(int id,int dir){
 		
 		if(this.gameInfo == GameInfo.Waiting){

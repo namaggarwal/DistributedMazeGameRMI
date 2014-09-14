@@ -28,6 +28,8 @@ public class MazeClient {
 		int msgType;
 		HashMap<String,Object> res = null;
 		
+		//[TODO] Need a score object
+		
 		MazeClient mc = new MazeClient();
 		
 		try {
@@ -71,15 +73,21 @@ public class MazeClient {
 				System.exit(-1);										
 		
 		}	    	    
-	    	
-    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    	String text;			
+	    	    			
     	
     	try{
     		
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	    	String text;
+
     		while(true){
     			
-    			text = br.readLine();        	
+    			text = br.readLine();
+    			
+    			if(text.length() == 0){
+    				continue;
+    			}
+    			
     			switch(text.toUpperCase().charAt(0)){
     				
     			case 'W': res = gs.move(mc.clientID,Direction.UP);
@@ -113,8 +121,9 @@ public class MazeClient {
 	    				mc.printGameBoard();
 						break;
         			case MessageType.GameOver:
+        				// [TODO] Take object of score and print that
 	    				message = res.get(Constants.MessageObject).toString();
-						System.out.println("Game Over !!!");									
+						System.out.println("Game Over. Thank you for playing...");									
 						break;		
         			default :
         				System.out.println("Unknown response from the server");
@@ -122,6 +131,7 @@ public class MazeClient {
         		
         		}
         		
+        		//[TODO] If game gets over client should move out of this while loop
     			
     			
     		}
@@ -143,7 +153,9 @@ public class MazeClient {
     
     
     private void printGameBoard(){
-    	    	
+    	
+    	//[TODO] Add code to print the score
+    	//[TODO] Screen should get cleared
     	for (int i = 0; i < this.boardSize; i++) {
 			for (int j = 0; j < this.boardSize; j++) {
 				System.out.print(this.gameBoard[i][j]+"\t");

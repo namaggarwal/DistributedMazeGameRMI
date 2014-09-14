@@ -4,6 +4,7 @@ public enum GameInfo {
 
 	NotStarted,
 	Waiting,
-	Started
+	Started, 
+	GameOver
 	
 }

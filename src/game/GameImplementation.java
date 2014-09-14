@@ -153,6 +153,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	public void startGame(){
 		
 		this.gameInfo = GameInfo.Started;
+		//[TODO] All connected clients should get the info that game has started 
 		
 	}
 	
@@ -206,6 +207,8 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 	}
 	
+	//Makes the actual move
+	//Updates the player score
 	private void makeMove(Player p,int newX, int newY){
 		
 		int curX = p.getxPos();
@@ -231,6 +234,9 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 			//[TODO] It should return the time, how long should the client wait
 			return createMessage(MessageType.Error,"Please wait for game to start..");
 			
+		}else if(this.gameInfo == GameInfo.GameOver){
+			//[TODO] Return the final score to print who won the game 
+			return createMessage(MessageType.GameOver,this.gameBoard);
 		}
 		
 		
@@ -266,7 +272,7 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 				
 				//Check game over condition here
 				if(numberOfTreasures == 0){
-					
+					this.gameInfo = GameInfo.GameOver;
 					return createMessage(MessageType.GameOver,this.gameBoard);
 				}
 				

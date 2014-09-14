@@ -15,7 +15,9 @@ import java.util.HashMap;
 
 public class MazeClient {
 
-	static int clientID;
+	int clientID;
+	int gameBoard[][];
+	int boardSize;
 	
     private MazeClient() {}
 
@@ -25,6 +27,8 @@ public class MazeClient {
 		GameMethod gs = null;
 		int msgType;
 		HashMap<String,Object> res = null;
+		
+		MazeClient mc = new MazeClient();
 		
 		try {
 		    Registry registry = LocateRegistry.getRegistry(host);
@@ -43,8 +47,9 @@ public class MazeClient {
 			
 		}catch(RemoteException re){
 			
-			System.out.println("Seems like server is not running or is throwing some exception.");
+			System.out.println("Seems like server is not running or is throwing some exception.");			
 			re.printStackTrace();
+			System.exit(-1);
 		}
 		
 		msgType = Integer.parseInt(res.get(Constants.MessageType).toString());
@@ -52,8 +57,9 @@ public class MazeClient {
 		switch(msgType){
 		
 			case MessageType.ConnectSuccess:
-				clientID = Integer.parseInt(res.get(Constants.MessageObject).toString());
-				System.out.println("Connected with id "+ clientID);
+				mc.clientID = Integer.parseInt(res.get(Constants.MessageObject).toString());
+				mc.boardSize = Integer.parseInt(res.get(Constants.BoardSize).toString());
+				System.out.println("Connected with id "+ mc.clientID);
 				break;
 			case MessageType.ConnectError:
 				String msg =res.get(Constants.MessageObject).toString(); 
@@ -64,10 +70,7 @@ public class MazeClient {
 				System.out.println("Unknown message type!!!!");
 				System.exit(-1);										
 		
-		}
-				 	 	    
-	    
-	    
+		}	    	    
 	    	
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     	String text;			
@@ -79,15 +82,15 @@ public class MazeClient {
     			text = br.readLine();        	
     			switch(text.toUpperCase().charAt(0)){
     				
-    			case 'W': res = gs.move(clientID,Direction.UP);
+    			case 'W': res = gs.move(mc.clientID,Direction.UP);
     				break;
-    			case 'A': res = gs.move(clientID,Direction.LEFT);
+    			case 'A': res = gs.move(mc.clientID,Direction.LEFT);
 					break;
-    			case 'S': res = gs.move(clientID,Direction.DOWN);
+    			case 'S': res = gs.move(mc.clientID,Direction.DOWN);
 					break;
-    			case 'D': res = gs.move(clientID,Direction.RIGHT);
+    			case 'D': res = gs.move(mc.clientID,Direction.RIGHT);
     				break;
-    			case 'E': res = gs.move(clientID,Direction.STAY);
+    			case 'E': res = gs.move(mc.clientID,Direction.STAY);
 					break;
 				default:
 					System.out.println("Invalid Move!!!");
@@ -101,14 +104,18 @@ public class MazeClient {
         		switch(msgType){
         			
         			case MessageType.Error:
-        							// Get the error message and print it
-        							message = res.get(Constants.MessageObject).toString();
-        							System.out.println(message);
-        							break;
-        			case MessageType.MazeObject:
-    			    				message = res.get(Constants.MessageObject).toString();
-    								System.out.println(message);									
-        							break;
+						// Get the error message and print it
+						message = res.get(Constants.MessageObject).toString();
+						System.out.println(message);
+						break;
+        			case MessageType.MazeObject:    					
+        				mc.gameBoard = (int[][]) res.get(Constants.MessageObject);
+	    				mc.printGameBoard();
+						break;
+        			case MessageType.GameOver:
+	    				message = res.get(Constants.MessageObject).toString();
+						System.out.println("Game Over !!!");									
+						break;		
         			default :
         					System.out.println("Unknown response from the server");
         			
@@ -132,5 +139,19 @@ public class MazeClient {
     
     	
 	
+    }
+    
+    
+    private void printGameBoard(){
+    	    	
+    	for (int i = 0; i < this.boardSize; i++) {
+			for (int j = 0; j < this.boardSize; j++) {
+				System.out.print(this.gameBoard[i][j]+"\t");
+			}
+			System.out.println();
+		}
+		
+		System.out.println();
+    	
     }
 }

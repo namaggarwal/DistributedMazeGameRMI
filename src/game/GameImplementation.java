@@ -94,8 +94,8 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	//Prints the gameBoard on server
 	private void printGameBoard(){
 		
-		for (int i = 0; i < boardSize; i++) {
-			for (int j = 0; j < boardSize; j++) {
+		for (int i = 0; i < this.boardSize; i++) {
+			for (int j = 0; j < this.boardSize; j++) {
 				System.out.print(this.gameBoard[i][j]+"\t");
 			}
 			System.out.println();
@@ -182,8 +182,9 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 			Player p = new Player(this.lastId);
 			this.pList.put(this.lastId, p);
 			setRandomPlayerPosition(p);
-			
-			return createMessage(MessageType.ConnectSuccess,this.lastId);
+			HashMap <String,Object> hm = createMessage(MessageType.ConnectSuccess,this.lastId);
+			hm.put(Constants.BoardSize, this.boardSize);
+			return hm;
 			
 		}else{
 			
@@ -233,11 +234,11 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 		
 		switch(dir){
 		
-			case Direction.UP: newX -= 1;
+			case Direction.UP:    newX -= 1;
 				break;
-			case Direction.DOWN: newX += 1;
+			case Direction.DOWN:  newX += 1;
 				break;
-			case Direction.LEFT: newY -= 1;
+			case Direction.LEFT:  newY -= 1;
 				break;
 			case Direction.RIGHT: newY += 1;
 				break;
@@ -253,63 +254,18 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 			if(!isOccupiedByPlayer(newX,newY)){
 				
 				makeMove(p,newX,newY);
-				// [TODO] Check game over condition here 
+				
+				//Check game over condition here
+				if(numberOfTreasures == 0){
+					
+					return createMessage(MessageType.GameOver,this.gameBoard);
+				}
+				
+				
 			}
 		}
 		
 		return createMessage(MessageType.MazeObject,this.gameBoard);
 	}
 	
-	/*
-//	This function will modify the current position of the user
-	public Position play(Player thisPlayer, char userInput){
- 		TODO : Check whether a player hits a treasure, in which case he scores
-			   Check whether a player hits another player, in which case he cannot move.
-			   Check whether a player goes out of the board, in which case he cannot move.
-//		Get the current player's position
-		Position currentPosition = thisPlayer.getPosition();
-		Position newPosition = currentPosition;
-//		Get his X and Y cordinates
-		int xPos = newPosition.getxPos();
-		int yPos = newPosition.getyPos();
-
-		//Move according to client input
-		switch (Character.toLowerCase(userInput)) {
-		
-			case 's':
-				//MoveLeft - Xpos-- and YPos same 
-				newPosition.setxPos(xPos--);
-				break;
-			
-			case 'd':
-				//MoveDown - YPos-- and Xpos same
-				newPosition.setyPos(yPos--);
-				break;
-			
-			case 'e':
-				//MoveUp - YPos++ and XPos same
-				newPosition.setyPos(yPos++);
-				break;
-			
-			case 'f':
-				//MoveRight - XPos++ and YPos same
-				newPosition.setxPos(xPos++);
-				break;
-			
-			default:
-				System.out.println("Invalid Input!");
-			}
-		//Checking whether new position is out of the board -
-		if(newPosition.getxPos() < 0 || 
-				newPosition.getyPos()<0 || 
-				newPosition.getxPos() > boardSize || 
-				newPosition.getyPos() > boardSize)
-			return newPosition;
-		else 
-			return newPosition;
-		
-	}
-	
-	*/
-			
 }

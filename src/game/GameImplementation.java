@@ -160,10 +160,10 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	public HashMap<String,Object> ConnectToGame(){
 		
 		 
-		switch(gameInfo){
+		switch(this.gameInfo){
 		
 			case NotStarted:
-					gameInfo = GameInfo.Waiting;
+					this.gameInfo = GameInfo.Waiting;
 					WaitConnect wc = new WaitConnect(this);
 					wc.start();
 					break;
@@ -226,6 +226,13 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 	
 	public HashMap<String,Object> move(int id,int dir){
 		
+		if(this.gameInfo == GameInfo.Waiting){
+			//[TODO] It should return the time, how long should the client wait
+			return createMessage(MessageType.Error,"Please wait for game to start..");
+			
+		}
+		
+		
 		Player p = this.pList.get(id);
 		int curX = p.getxPos();
 		int curY = p.getyPos();
@@ -243,8 +250,9 @@ public class GameImplementation extends UnicastRemoteObject implements GameMetho
 			case Direction.RIGHT: newY += 1;
 				break;
 			case Direction.STAY:
-				return createMessage(MessageType.MazeObject,this.gameBoard);				
-		
+				return createMessage(MessageType.MazeObject,this.gameBoard);
+			default:
+				return createMessage(MessageType.Error,"Unknown move");
 		}
 		
 		//Do the bounds checking		

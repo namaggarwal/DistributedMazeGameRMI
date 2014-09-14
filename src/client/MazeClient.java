@@ -117,7 +117,7 @@ public class MazeClient {
 						System.out.println("Game Over !!!");									
 						break;		
         			default :
-        					System.out.println("Unknown response from the server");
+        				System.out.println("Unknown response from the server");
         			
         		
         		}
